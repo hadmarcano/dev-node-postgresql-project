@@ -1,10 +1,12 @@
 const faker = require('faker');
 const Boom = require('@hapi/boom');
+const {models} = require('./../libs/sequelize');
 
 class UserService {
   constructor() {
     this.listUsers = [];
     this.generate();
+
   }
 
   generate() {
@@ -21,31 +23,14 @@ class UserService {
     }
   }
 
-  async createOne(dataUser) {
-    const id = faker.datatype.uuid();
-    try {
-      dataUser.id = id;
-      await this.listUsers.push(dataUser);
-      const response = {
-        created: 'OK',
-        userId: dataUser.id,
-      };
-      return response;
-    } catch (error) {
-      throw Boom.conflict('An error has occurred');
-    }
+  async getting() {
+    const response = await models.User.findAll();
+    return response;
   }
 
-  getting() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.listUsers);
-      }, 1000);
-    });
-  }
 
   async getOne(id) {
-    const user = await this.listUsers.find((el) => el.id == id);
+    const user = await models.User.findByPk(id);
 
     if (!user) {
       throw Boom.notFound('User not exists');
@@ -54,29 +39,45 @@ class UserService {
     return user;
   }
 
-  async updateOne(id, changes) {
-    const userIndex = await this.listUsers.findIndex((el) => el.id == id);
 
-    if (userIndex === -1) {
+  async createOne(dataUser) {
+    try {
+      const newUser = await models.User.create(dataUser);
+      const response = {
+        created: 'OK',
+        user: newUser,
+      };
+      return response;
+    } catch (error) {
+      throw Boom.conflict('An error has occurred');
+    }
+  }
+
+
+  async updateOne(id, changes) {
+    const user = await models.User.findByPk(id);
+
+    if (!user) {
       throw Boom.notFound('User not exists');
     }
 
-    const user = this.listUsers[userIndex];
-    this.listUsers[userIndex] = {
-      ...user,
-      ...changes,
-    };
+    const response = await user.update(changes);
+    return response;
 
-    return this.listUsers[userIndex];
+
   }
 
   async deleteOne(id) {
-    const userIndex = await this.listUsers.findIndex((el) => el.id == id);
-    if(userIndex === -1){
-      throw Boom.notFound("User not exists");
+    const user = await models.User.findByPk(id);
+
+    if (!user) {
+      throw Boom.notFound('User not exists');
     }
-    this.listUsers.splice(userIndex,1);
-    return {id};
+
+    await user.destroy();
+
+    return {id,
+    deleted: "OK"}
   }
 }
 

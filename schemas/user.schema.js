@@ -1,27 +1,36 @@
 const Joi = require('joi');
 
-const id = Joi.string().uuid();
-const firstName = Joi.string().min(3).max(20);
-const lastName = Joi.string().min(3).max(20);
+const id = Joi.number();
+const firstname = Joi.string().min(3).max(20);
+const lastname = Joi.string().min(3).max(20);
 const address = Joi.string().min(3).max(50);
 const ocupation = Joi.string().min(3).max(20);
+const email = Joi.string().email();
+const password = Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'));
+const createdAt = Joi.date();
 
 const getUserSchema = Joi.object({
-  userId: id.required().required(),
+  userId: id.required(),
 });
 
 const createUserSchema = Joi.object({
-  firstName: firstName.required(),
-  lastName: lastName.required(),
+  firstname: firstname.required(),
+  lastname: lastname.required(),
   address: address.required(),
-  ocupation: ocupation.required()
+  ocupation: ocupation.required(),
+  email: email.required(),
+  password: password.required(),
+  createdAt:createdAt.required()
 });
 
 const updateUserSchema = Joi.object({
-  firstName: firstName,
-  lastName: lastName,
+  firstname: firstname,
+  lastname: lastname,
   address: address,
-  ocupation: ocupation
+  ocupation: ocupation,
+  email: email,
+  password: password,
+  createdAt:createdAt
 });
 
 
