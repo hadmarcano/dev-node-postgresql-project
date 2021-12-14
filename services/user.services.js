@@ -41,16 +41,14 @@ class UserService {
 
 
   async createOne(dataUser) {
-    try {
+
       const newUser = await models.User.create(dataUser);
       const response = {
         created: 'OK',
         user: newUser,
       };
       return response;
-    } catch (error) {
-      throw Boom.conflict('An error has occurred');
-    }
+
   }
 
 

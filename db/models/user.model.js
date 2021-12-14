@@ -4,38 +4,43 @@ const USER_TABLE = 'users';
 
 const UserSchema = {
   id: {
-    alowNull: false,
+    allowNull: false,
     autoIncrement: true,
     primaryKey: true,
     type: DataTypes.INTEGER
   },
   firstname:{
-    alowNull: false,
+    allowNull: false,
     type: DataTypes.STRING
   },
   lastname:{
-    alowNull: false,
+    allowNull: false,
     type: DataTypes.STRING
   },
   address:{
-    alowNull: false,
+    allowNull: false,
     type: DataTypes.STRING,
   },
   ocupation:{
-    alowNull: false,
+    allowNull: false,
     type: DataTypes.STRING
   },
   email:{
-    alowNull: false,
+    allowNull: false,
     type: DataTypes.STRING,
     unique: true
   },
+  role:{
+    allowNull:false,
+    type: DataTypes.STRING,
+    defaultValue:'customer'
+  },
   password: {
-    alowNull: false,
+    allowNull: false,
     type: DataTypes.STRING
   },
   createdAt:{
-    alowNull:false,
+    allowNull:false,
     type:DataTypes.DATE,
     field:'created_at',
     defaultValue: Sequelize.NOW

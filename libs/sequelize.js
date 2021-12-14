@@ -15,7 +15,9 @@ const sequelize = new Sequelize(URI, {
 // Initalizing models
 setupModels(sequelize);
 
+// # AHORA HACEMOS ESTA SYNC MEDIANTE MIGRATIONS #
 // Syncronizing models and creating tables
-sequelize.sync({ logging: console.log })
+// sequelize.sync({ logging: console.log })
+// sequelize.sync()
 
 module.exports = sequelize;

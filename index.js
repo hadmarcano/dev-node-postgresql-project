@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const { logErrors, errorHandler,BoomErrorHandler } = require('./middlewares/error.handler');
+const { logErrors, errorHandler,BoomErrorHandler, ormErrorHandler } = require('./middlewares/error.handler');
 
 // Express
 const app = express();
@@ -32,6 +32,7 @@ routerApi(app);
 
 // Middlewares - after
 app.use(logErrors);
+app.use(ormErrorHandler);
 app.use(BoomErrorHandler);
 app.use(errorHandler);
 
