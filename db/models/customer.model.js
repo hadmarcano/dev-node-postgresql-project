@@ -30,6 +30,7 @@ const CustomerSchema =  {
     field: 'created_at',
     defaultValue: Sequelize.NOW,
   },
+  // Relations: belongsTo ->
   userId: {
     field: 'user_id',
     allowNull: false,
@@ -46,8 +47,8 @@ const CustomerSchema =  {
 
 class Customer extends Model {
 
-  static associate() {
-    // this.belongsTo(models.User, {as: 'user'});
+  static associate(models) {
+    this.belongsTo(models.User, {as: 'user'});
   }
 
   static config(sequelize) {

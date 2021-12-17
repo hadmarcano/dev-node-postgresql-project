@@ -11,6 +11,9 @@ function setupModels(sequelize){
     Category.init(CategorySchema, Category.config(sequelize));
     Customer.init(CustomerSchema, Customer.config(sequelize));
 
+    // Associations
+    Customer.associate(sequelize.models);
+
   } catch (error) {
     throw new Error(error);
   }
