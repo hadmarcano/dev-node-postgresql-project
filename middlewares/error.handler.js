@@ -27,7 +27,7 @@ function ormErrorHandler(err, req, res, next){
   if(err instanceof ValidationError){
     // console.log("EL ERROR:",err);
     res.status(409).json({
-      statuscode:409,
+      statusCode:409,
       message:err.name,
       errors:err.errors
     });

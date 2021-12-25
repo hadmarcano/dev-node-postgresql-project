@@ -1,6 +1,7 @@
 const faker = require('faker');
 const Boom = require('@hapi/boom');
 const {models} = require('./../libs/sequelize');
+// const { Op } = require("sequelize");
 
 class UserService {
   constructor() {
@@ -24,14 +25,24 @@ class UserService {
   }
 
   async getting() {
-    const response = await models.User.findAll();
+    const response = await models.User.findAll({
+      include:['customer']
+    });
     return response;
   }
 
 
   async getOne(id) {
-    const user = await models.User.findByPk(id);
+    const user = await models.User.findAll({
+      where: {id},
+      // attributes: ['firstname','lastname', 'ocupation', 'email'],
+      include:[{
+        as:"customer",
+        model: models.Customer,
+      }]
+    });
 
+    console.log(user);
     if (!user) {
       throw Boom.notFound('User not exists');
     }

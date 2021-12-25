@@ -48,6 +48,7 @@ const CustomerSchema =  {
 class Customer extends Model {
 
   static associate(models) {
+    // associate
     this.belongsTo(models.User, {as: 'user'});
   }
 

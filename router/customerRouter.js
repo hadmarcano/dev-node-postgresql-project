@@ -19,6 +19,15 @@ router.get('/customers',  async (req, res, next) => {
   }
 });
 
+router.get('/customers/:id',  async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    res.status(201).json(await service.findOne(id));
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post('/customers/create',
   validationHandler(createCustomerSchema, 'body'),
   async (req, res, next) => {

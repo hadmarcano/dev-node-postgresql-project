@@ -1,6 +1,6 @@
 const faker = require('faker');
 const Boom = require('@hapi/boom');
-const {models} = require('./../libs/sequelize');
+const { models } = require('./../libs/sequelize');
 
 class ProductService {
   constructor() {
@@ -34,7 +34,7 @@ class ProductService {
   }
 
   async find() {
-   //
+    //
     const response = await models.Product.findAll();
     return response;
   }

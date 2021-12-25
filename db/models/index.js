@@ -7,11 +7,12 @@ const {CustomerSchema, Customer} = require('./customer.model');
 function setupModels(sequelize){
   try {
     User.init(UserSchema, User.config(sequelize));
+    Customer.init(CustomerSchema, Customer.config(sequelize));
     Product.init(ProductSchema, Product.config(sequelize));
     Category.init(CategorySchema, Category.config(sequelize));
-    Customer.init(CustomerSchema, Customer.config(sequelize));
 
     // Associations
+    User.associate(sequelize.models);
     Customer.associate(sequelize.models);
 
   } catch (error) {
