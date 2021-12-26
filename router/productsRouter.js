@@ -17,12 +17,12 @@ router.get('/products', async (req, res) => {
 });
 
 router.get(
-  '/products/:productId',
+  '/products/:id',
   validatorHandler(getProductSchema,'params'),
   async (req, res, next) => {
-    const { productId } = req.params;
+    const { id } = req.params;
     try {
-      const product = await service.findOne(productId);
+      const product = await service.findOne(id);
       res.json(product);
     } catch (error) {
       next(error);
@@ -40,23 +40,23 @@ async (req, res) => {
 });
 
 // PATCH ---> updating partial. || PUT ---> full updating (by API REST convention)
-router.patch('/products/edit/:productId',
+router.patch('/products/edit/:id',
 validatorHandler(getProductSchema,'params'),
 validatorHandler(updateProductSchema,'body'),
 async (req, res, next) => {
-  const { productId } = req.params;
+  const { id } = req.params;
   const { body } = req;
   try {
-    const product = await service.update(productId, body);
+    const product = await service.update(id, body);
     res.json(product);
   } catch (error) {
     next(error);
   }
 });
 
-router.delete('/products/delete/:productId', async (req, res) => {
-  const { productId } = req.params;
-  const response = await service.delete(productId);
+router.delete('/products/delete/:id', async (req, res) => {
+  const { id } = req.params;
+  const response = await service.delete(id);
   res.json(response);
 });
 

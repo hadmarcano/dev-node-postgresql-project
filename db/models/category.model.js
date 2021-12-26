@@ -1,5 +1,4 @@
 const { Model, DataTypes, Sequelize } = require('sequelize');
-
 const CATEGORY_TABLE = 'categories';
 
 const CategorySchema = {
@@ -29,11 +28,11 @@ const CategorySchema = {
 
 class Category extends Model {
 
-  static associate() {
-    // this.hasMany(models.Product, {
-    //   as: 'products',
-    //   foreignKey: 'categoryId'
-    // });
+  static associate(models) {
+    this.hasMany(models.Product, {
+      as: 'products',
+      foreignKey: 'categoryId'
+    });
   }
 
   static config(sequelize) {
