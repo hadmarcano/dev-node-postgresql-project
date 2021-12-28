@@ -49,6 +49,7 @@ class Product extends Model {
   static  associate(models){
     // associate
     this.belongsTo(models.Category, { as: 'category' });
+
   }
 
   static config(sequelize) {
