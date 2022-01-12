@@ -22,8 +22,19 @@ router.get(
   async (req, res, next) => {
     const { id } = req.params;
     try {
+      let total = 0;
       const order = await service.findOne(id);
-      res.json(order);
+      if (order.items.length > 0) {
+        total = order.items.reduce((total, item) => {
+          return total + item.price * item.OrderProduct.amount;
+        }, 0);
+      }
+
+      const result = {
+        order,
+        totalOrder: total,
+      };
+      res.json(result);
     } catch (error) {
       next(error);
     }

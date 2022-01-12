@@ -21,6 +21,7 @@ class OrderService {
       ]
     });
     if(!order) throw Boom.notFound('Order not exists');
+
     return order;
   }
 
