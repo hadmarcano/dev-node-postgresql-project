@@ -1,13 +1,14 @@
 const faker = require('faker');
 const Boom = require('@hapi/boom');
-const {models} = require('./../libs/sequelize');
+const { models } = require('./../libs/sequelize');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 // const { Op } = require("sequelize");
 
 class UserService {
   constructor() {
     this.listUsers = [];
     this.generate();
-
   }
 
   generate() {
@@ -26,20 +27,34 @@ class UserService {
 
   async getting() {
     const response = await models.User.findAll({
-      include:['customer']
+      include: ['customer'],
     });
     return response;
   }
 
-
   async getOne(id) {
     const user = await models.User.findAll({
-      where: {id},
+      where: { id },
       // attributes: ['firstname','lastname', 'ocupation', 'email'],
-      include:[{
-        as:"customer",
-        model: models.Customer,
-      }]
+      include: [
+        {
+          as: 'customer',
+          model: models.Customer,
+        },
+      ],
+    });
+
+    console.log("aqui",user);
+    if (!user) {
+      throw Boom.notFound('User not exists');
+    }
+
+    return user;
+  }
+
+  async getByEmail(email) {
+    const user = await models.User.findOne({
+      where: { email }
     });
 
     console.log(user);
@@ -50,18 +65,19 @@ class UserService {
     return user;
   }
 
-
   async createOne(dataUser) {
-
-      const newUser = await models.User.create(dataUser);
-      const response = {
-        created: 'OK',
-        user: newUser,
-      };
-      return response;
-
+    if (dataUser.password) {
+      const plainPassword = dataUser.password;
+      const hashPass = await bcrypt.hash(plainPassword, saltRounds);
+      dataUser.password = hashPass;
+    }
+    const newUser = await models.User.create(dataUser);
+    const response = {
+      created: 'OK',
+      user: newUser,
+    };
+    return response;
   }
-
 
   async updateOne(id, changes) {
     const user = await models.User.findByPk(id);
@@ -69,11 +85,14 @@ class UserService {
     if (!user) {
       throw Boom.notFound('User not exists');
     }
+    if (changes.password) {
+      const plainPassword = changes.password;
+      const hashPass = await bcrypt.hash(plainPassword, saltRounds);
+      changes.password = hashPass;
+    }
 
     const response = await user.update(changes);
     return response;
-
-
   }
 
   async deleteOne(id) {
@@ -85,8 +104,7 @@ class UserService {
 
     await user.destroy();
 
-    return {id,
-    deleted: "OK"}
+    return { id, deleted: 'OK' };
   }
 }
 

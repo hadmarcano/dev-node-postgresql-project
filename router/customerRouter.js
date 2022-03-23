@@ -13,6 +13,7 @@ const service = new CustomerService();
 
 router.get('/customers',  async (req, res, next) => {
   try {
+
     res.json(await service.find());
   } catch (error) {
     next(error);
@@ -33,7 +34,8 @@ router.post('/customers/create',
   async (req, res, next) => {
     try {
       const body = req.body;
-      res.status(201).json(await service.create(body));
+      let result = await service.create(body);
+      res.status(201).json(result);
     } catch (error) {
       next(error);
     }

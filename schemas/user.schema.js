@@ -22,7 +22,7 @@ const createUserSchema = Joi.object({
   email: email.required(),
   role: role,
   password: password.required(),
-  createdAt:createdAt.required()
+  createdAt:createdAt
 });
 
 const updateUserSchema = Joi.object({

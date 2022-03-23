@@ -1,5 +1,7 @@
 const Boom = require('@hapi/boom');
 const { models } = require('../libs/sequelize');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 class CustomerService {
   constructor() {}
@@ -34,11 +36,18 @@ class CustomerService {
     // que le indiquemos y cualquier subObjeto que este identifice
     // con el nombre indicado lo reconoce automáticamente.
 
-    const newCustomer = await models.Customer.create(data,{
-      include:['user']
-    });
+    if (data.user.password && data.user.password.length >= 3) {
+      const plainPassword = data.user.password;
+      const passHashed = await bcrypt.hash(plainPassword, saltRounds);
+      data.user.password = passHashed;
+      let newCustomer = await models.Customer.create(data, {
+        include: ['user'],
+      });
 
-    return newCustomer;
+      return newCustomer;
+    } else {
+      Boom.badRequest();
+    }
   }
 
   async update(id, changes) {

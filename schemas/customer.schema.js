@@ -28,7 +28,7 @@ const createCustomerSchema = Joi.object({
     lastname:lastname.required(),
     address:address.required(),
     ocupation:ocupation.required(),
-    createdAt:createdAt.required(),
+    createdAt:createdAt,
     email: email.required(),
     password: password.required()
   })
