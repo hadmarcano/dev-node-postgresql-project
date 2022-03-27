@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const passport = require('passport');
 const UserService = require('../services/user.services');
 //
 const router = Router();
@@ -11,17 +12,22 @@ const {
 } = require('../schemas/user.schema');
 
 // Routers
-router.get('/users', async (req, res, next) => {
-  try {
-    const result = await service.getting();
-    res.json(result);
-  } catch (error) {
-    next(error);
+router.get(
+  '/users',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const result = await service.getting();
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.get(
   '/users/:userId',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     const { userId } = req.params;
@@ -51,6 +57,7 @@ router.post(
 
 router.patch(
   '/users/update/:userId',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getUserSchema, 'params'),
   validatorHandler(updateUserSchema, 'body'),
   async (req, res, next) => {
@@ -67,6 +74,7 @@ router.patch(
 
 router.delete(
   '/users/delete/:userId',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     const { userId } = req.params;

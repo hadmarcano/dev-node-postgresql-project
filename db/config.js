@@ -7,17 +7,17 @@ const { config } = require('../config/config');
 const URI = config.dbUrl;
 
 module.exports = {
-  development:{
+  development: {
     url: URI,
-    dialect: ' postgres'
+    dialect: 'postgres',
   },
   production: {
     url: URI,
     dialect: 'postgres',
-    dialectOptions:{
-      ssl : {
-        rejectUnauthorized: false
-      }
-    }
-  }
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
+  },
 };

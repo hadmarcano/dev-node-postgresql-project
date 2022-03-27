@@ -11,7 +11,8 @@ const config = {
   dbPort: process.env.DB_PORT,
   dbUrl: process.env.DATABASE_URL,
   api_public_key: process.env.API_PUBLIC_KEY,
-  salt_rounds: process.env.SALT_ROUNDS
-}
+  salt_rounds: process.env.SALT_ROUNDS,
+  secret_key: process.env.SECRET,
+};
 
-module.exports = {config};
+module.exports = { config };

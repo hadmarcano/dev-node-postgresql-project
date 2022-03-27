@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const passport = require('passport');
 const ProductService = require('../services/product.services');
 //
 const router = Router();
@@ -41,6 +42,7 @@ router.get(
 
 router.post(
   '/products/create',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createProductSchema, 'body'),
   async (req, res) => {
     const body = req.body;
@@ -53,6 +55,7 @@ router.post(
 // PATCH ---> updating partial. || PUT ---> full updating (by API REST convention)
 router.patch(
   '/products/edit/:id',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getProductSchema, 'params'),
   validatorHandler(updateProductSchema, 'body'),
   async (req, res, next) => {
@@ -67,10 +70,14 @@ router.patch(
   }
 );
 
-router.delete('/products/delete/:id', async (req, res) => {
-  const { id } = req.params;
-  const response = await service.delete(id);
-  res.json(response);
-});
+router.delete(
+  '/products/delete/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const { id } = req.params;
+    const response = await service.delete(id);
+    res.json(response);
+  }
+);
 
 module.exports = router;

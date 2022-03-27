@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const passport = require('passport');
 const OrderService = require('../services/order.services');
 //
 const router = Router();
@@ -11,13 +12,18 @@ const {
 } = require('../schemas/order.schema');
 
 // Routers
-router.get('/orders', async (req, res) => {
-  const orders = await service.find();
-  res.json(orders);
-});
+router.get(
+  '/orders',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const orders = await service.find();
+    res.json(orders);
+  }
+);
 
 router.get(
   '/orders/:id',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getOrderSchema, 'params'),
   async (req, res, next) => {
     const { id } = req.params;
@@ -43,6 +49,7 @@ router.get(
 
 router.post(
   '/orders/create',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(createOrderSchema, 'body'),
   async (req, res) => {
     const body = req.body;
@@ -54,6 +61,7 @@ router.post(
 
 router.delete(
   '/orders/delete/:id',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(getOrderSchema, 'params'),
   async (req, res) => {
     const { id } = req.params;
@@ -65,6 +73,7 @@ router.delete(
 
 router.post(
   '/orders/add-item',
+  passport.authenticate('jwt', { session: false }),
   validatorHandler(addItemSchema, 'body'),
   async (req, res) => {
     const body = req.body;
