@@ -10,27 +10,54 @@ class OrderService {
   }
 
   async findOne(id) {
-    const order = await models.Order.findByPk(id,{
+    const order = await models.Order.findByPk(id, {
       // include:['customer']
-      include:[
+      include: [
         {
-          association:'customer',
-          include:['user']
+          association: 'customer',
+          include: ['user'],
         },
-        'items'
-      ]
+        'items',
+      ],
     });
-    if(!order) throw Boom.notFound('Order not exists');
+    if (!order) throw Boom.notFound('Order not exists');
 
     return order;
+  }
+
+  async findByUser(userId) {
+    const orders = await models.Order.findAll({
+      where: {
+        '$customer.user.id$': userId,
+      },
+      include: [
+        {
+          association: 'customer',
+          include: ['user'],
+        },
+      ],
+    });
+
+    return orders;
+  }
+
+  async createByUserId(userId) {
+    const customerInfo = await models.User.findByPk(userId, {
+      include: ['customer'],
+    });
+
+    if (!customerInfo.customer.id) throw Boom.notFound('Customer not exists');
+
+    let customerId = { customerId: customerInfo.customer.id };
+
+    const newOrder = await models.Order.create(customerId);
+    return newOrder;
   }
 
   async create(data) {
     const newOrder = await models.Order.create(data);
     return newOrder;
   }
-
-
 
   async update(id, changes) {
     return {
@@ -41,11 +68,11 @@ class OrderService {
 
   async delete(id) {
     const order = await this.findOne(id);
-    if(!order) throw Boom.notFound('Order not exists');
+    if (!order) throw Boom.notFound('Order not exists');
     order.destroy();
     return {
-      deleted:true
-    }
+      deleted: true,
+    };
   }
 
   async addItem(data) {

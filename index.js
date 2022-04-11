@@ -5,11 +5,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const {
-  checkApiKey,
-  hashingPassword,
-  deshashingPassword,
-} = require('./middlewares/auth.handler');
+
 const {
   logErrors,
   errorHandler,
@@ -35,24 +31,7 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(helmet());
-require("./utils/auth/index");
-
-// app.get('/api/newpage', checkApiKey, (req, res) => {
-//   res.send('nueva ruta');
-// });
-
-// app.post('/api/hashing', hashingPassword, (req, res) => {
-//   if (req.passHash) res.json({ password: req.passHash });
-//   res.status(400).json({ message: 'connot hashing this password' });
-// });
-
-// app.post('/api/deshashing', deshashingPassword, (req, res) => {
-//   if (req.decypherHash === true) {
-//     res.json({ isMatch: req.decypherHash });
-//   } else {
-//     res.status(404).json({ isMatch: req.decypherHash });
-//   }
-// });
+require('./utils/auth/index');
 
 // Routes
 routerApi(app);

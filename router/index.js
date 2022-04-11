@@ -4,6 +4,7 @@ const categoriesRouter = require('./categoriesRouter');
 const ordersRouter = require('./ordersRouter');
 const customerRouter = require('./customerRouter');
 const authRouter = require('./authRouter');
+const profileRouter = require('./profile.router');
 
 const routerApi = (app) => {
   app.use('/api', usersRouter);
@@ -11,6 +12,7 @@ const routerApi = (app) => {
   app.use('/api', categoriesRouter);
   app.use('/api', productsRouter);
   app.use('/api', ordersRouter);
+  app.use('/api', profileRouter);
   app.use('/api', authRouter);
 };
 

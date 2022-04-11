@@ -30,9 +30,9 @@ const hashingPassword = async (req, res, next) => {
 // deshash Password
 const deshashingPassword = async (req, res, next) => {
   if (req.body.password && req.body.password.length >= 3) {
-
     // Find user hash password from bbdd
-    const hashPass = "$2b$10$eqH5Vq5dCsYyTBQocUEHUeByQUXqDl0I7S4k88AvC6Ehn6FEmzoGq";
+    const hashPass =
+      '$2b$10$eqH5Vq5dCsYyTBQocUEHUeByQUXqDl0I7S4k88AvC6Ehn6FEmzoGq';
     const plainPassword = req.body.password;
     const decypherHash = await bcrypt.compare(plainPassword, hashPass);
     // Store hash password into bbdd
@@ -43,4 +43,34 @@ const deshashingPassword = async (req, res, next) => {
   }
 };
 
-module.exports = { checkApiKey, hashingPassword,deshashingPassword };
+const checkAdminRole = (req, res, next) => {
+  const user = req.user;
+  // console.log(user);
+  if (user.role === 'admin') {
+    next();
+  } else {
+    next(Boom.unauthorized());
+  }
+};
+
+const checkRoles = (...roles) => {
+  return (req, res, next) => {
+    const user = req.user;
+    console.log(roles);
+    console.log(roles.includes(user.role));
+    // roles ---> ['admin', 'seller',...]
+    if (roles.includes(user.role)) {
+      next();
+    } else {
+      next(Boom.unauthorized());
+    }
+  };
+};
+
+module.exports = {
+  checkApiKey,
+  hashingPassword,
+  deshashingPassword,
+  checkAdminRole,
+  checkRoles,
+};
