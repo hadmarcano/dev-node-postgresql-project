@@ -1,4 +1,4 @@
-const { Model, DataTypes, Sequelize} = require('sequelize');
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
 const USER_TABLE = 'users';
 
@@ -7,52 +7,57 @@ const UserSchema = {
     allowNull: false,
     autoIncrement: true,
     primaryKey: true,
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
   },
-  firstname:{
-    allowNull: false,
-    type: DataTypes.STRING
-  },
-  lastname:{
-    allowNull: false,
-    type: DataTypes.STRING
-  },
-  address:{
+  firstname: {
     allowNull: false,
     type: DataTypes.STRING,
   },
-  ocupation:{
-    allowNull: false,
-    type: DataTypes.STRING
-  },
-  email:{
+  lastname: {
     allowNull: false,
     type: DataTypes.STRING,
-    unique: true
   },
-  role:{
-    allowNull:false,
+  address: {
+    allowNull: false,
     type: DataTypes.STRING,
-    defaultValue:'customer'
+  },
+  ocupation: {
+    allowNull: false,
+    type: DataTypes.STRING,
+  },
+  email: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    unique: true,
+  },
+  role: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    defaultValue: 'customer',
   },
   password: {
     allowNull: false,
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
   },
-  createdAt:{
-    allowNull:false,
-    type:DataTypes.DATE,
-    field:'created_at',
-    defaultValue: Sequelize.NOW
-  }
+  recoveryToken: {
+    field: 'recovery_token',
+    allowNull: true,
+    type: DataTypes.STRING,
+  },
+  createdAt: {
+    allowNull: false,
+    type: DataTypes.DATE,
+    field: 'created_at',
+    defaultValue: Sequelize.NOW,
+  },
 };
 
 class User extends Model {
   static associate(models) {
     // associate
-    this.hasOne(models.Customer,{
-      as:'customer',
-      foreignKey:'userId'
+    this.hasOne(models.Customer, {
+      as: 'customer',
+      foreignKey: 'userId',
     });
   }
 
@@ -61,13 +66,13 @@ class User extends Model {
       sequelize,
       tableName: USER_TABLE,
       modelName: 'User',
-      timestamps: false
-    }
+      timestamps: false,
+    };
   }
-};
+}
 
-module.exports={
+module.exports = {
   USER_TABLE,
   UserSchema,
-  User
+  User,
 };

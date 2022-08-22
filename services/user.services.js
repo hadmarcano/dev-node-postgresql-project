@@ -44,7 +44,7 @@ class UserService {
       ],
     });
 
-    console.log("aqui",user);
+    console.log('aqui', user);
     if (!user) {
       throw Boom.notFound('User not exists');
     }
@@ -54,14 +54,21 @@ class UserService {
 
   async getByEmail(email) {
     const user = await models.User.findOne({
-      where: { email }
+      where: { email },
     });
 
-    console.log(user);
+    // console.log(user);
     if (!user) {
       throw Boom.notFound('User not exists');
     }
 
+    return user;
+  }
+
+  async getByEmailForRecover(email) {
+    const user = await models.User.findOne({
+      where: { email },
+    });
     return user;
   }
 

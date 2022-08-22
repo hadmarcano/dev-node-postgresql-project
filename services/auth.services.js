@@ -1,6 +1,6 @@
 const UserService = require('./user.services');
 const bcrypt = require('bcrypt');
-const boom = require('@hapi/boom');
+const Boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const { config } = require('../config/config');
@@ -15,13 +15,13 @@ class AuthService {
   async getUser(email, password) {
     const user = await service.getByEmail(email);
     if (!user) {
-      throw boom.unauthorized();
+      throw Boom.unauthorized();
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw boom.unauthorized();
+      throw Boom.unauthorized();
     }
 
     delete user.dataValues.password;
@@ -55,12 +55,40 @@ class AuthService {
     };
   }
 
-  async sendEmail(email) {
-    const user = await service.getByEmail(email);
+  async sendRecovery(email) {
+    const user = await service.getByEmailForRecover(email);
     if (!user) {
-      throw boom.unauthorized();
+      throw Boom.unauthorized();
     }
 
+    // Generating a secure link that permit to user recovery password:
+    // 1- Create a token:
+
+    const payload = { sub: user.id };
+    const token = jwt.sign(payload, config.secret_key, {
+      expiresIn: 120,
+    });
+
+    // 2- Create a redirection link:
+    const link = `http://myfrontend.com/recovery?token=${token}`;
+
+    // 3- Saving a token generated:
+    await service.updateOne(user.id, { recoveryToken: token });
+
+    const mail = {
+      from: user_mailer, // sender address
+      to: user.email, // list of receivers
+      subject: 'RECUPERACION DE CONTRASEÑA ✔', // Subject line
+      text: `Hello ${user.firstname}`, // plain text body
+      html: `<b>Ingresa a este link => ${link} </b>`, // html body
+    };
+
+    const response = await this.sendEmail(mail);
+
+    return response;
+  }
+
+  async sendEmail(infoMail) {
     let transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       secure: true, // true for 465, false for other ports
@@ -73,13 +101,7 @@ class AuthService {
     });
 
     // send mail with defined transport object
-    let info = await transporter.sendMail({
-      from: user_mailer, // sender address
-      to: user.email, // list of receivers
-      subject: 'RECUPERACION DE CONTRASEÑA ✔', // Subject line
-      text: `Hello ${user.firstname}`, // plain text body
-      html: '<b>Hello from Node Postgres Store App!</b>', // html body
-    });
+    let info = await transporter.sendMail(infoMail);
 
     console.log('Message sent: %s', info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
