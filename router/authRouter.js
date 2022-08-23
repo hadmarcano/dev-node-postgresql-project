@@ -29,4 +29,20 @@ router.post('/auth/recovery', async (req, res, next) => {
   }
 });
 
+router.post('/auth/change-password', async (req, res, next) => {
+  try {
+    const { token, newPassword, reNewPassword } = req.body;
+
+    if (newPassword !== reNewPassword) {
+      throw new Error('Entered passwords dont match');
+    }
+
+    const response = await service.changePassword(token, newPassword);
+
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

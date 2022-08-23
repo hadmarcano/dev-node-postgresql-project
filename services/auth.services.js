@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const user_mailer = process.env.USER_MAILER;
 const password_mailer = process.env.PASSWORD_MAILER;
+const saltRounds = 10;
 
 const service = new UserService();
 
@@ -66,7 +67,7 @@ class AuthService {
 
     const payload = { sub: user.id };
     const token = jwt.sign(payload, config.secret_key, {
-      expiresIn: 120,
+      expiresIn: 300,
     });
 
     // 2- Create a redirection link:
@@ -75,6 +76,7 @@ class AuthService {
     // 3- Saving a token generated:
     await service.updateOne(user.id, { recoveryToken: token });
 
+    // 4- Sending email with link and token to redirect to form with to recover password:
     const mail = {
       from: user_mailer, // sender address
       to: user.email, // list of receivers
@@ -114,6 +116,33 @@ class AuthService {
       messageSend: info.messageId,
       previewUrl: nodemailer.getTestMessageUrl(info),
     };
+  }
+
+  async changePassword(token, newPassword) {
+    try {
+      // 1- Getting the payload from the token...
+
+      const payload = jwt.verify(token, config.secret_key);
+      const user = await service.getOne(payload.sub);
+
+      // 2- Verifying token...
+
+      if (user.dataValues.recoveryToken !== token) {
+        throw Boom.unauthorized();
+      }
+
+      // 3- Saving the new password...
+
+      console.log(user.dataValues.id);
+      await service.updateOne(user.dataValues.id, {
+        recoveryToken: null,
+        password: newPassword,
+      });
+
+      return { message: 'Password changed' };
+    } catch (error) {
+      throw Boom.unauthorized(error);
+    }
   }
 }
 

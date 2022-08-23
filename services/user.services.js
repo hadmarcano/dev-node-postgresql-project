@@ -33,7 +33,7 @@ class UserService {
   }
 
   async getOne(id) {
-    const user = await models.User.findAll({
+    const user = await models.User.findOne({
       where: { id },
       // attributes: ['firstname','lastname', 'ocupation', 'email'],
       include: [
@@ -44,7 +44,6 @@ class UserService {
       ],
     });
 
-    console.log('aqui', user);
     if (!user) {
       throw Boom.notFound('User not exists');
     }
