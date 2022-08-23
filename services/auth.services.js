@@ -8,7 +8,6 @@ require('dotenv').config();
 
 const user_mailer = process.env.USER_MAILER;
 const password_mailer = process.env.PASSWORD_MAILER;
-const saltRounds = 10;
 
 const service = new UserService();
 
