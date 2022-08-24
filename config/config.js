@@ -9,7 +9,7 @@ const config = {
   dbHost: process.env.DB_HOST,
   dbName: process.env.DB_NAME,
   dbPort: process.env.DB_PORT,
-  dbUrl: process.env.DATABASE_URL,
+  dbUrl: process.env.DATABASE_URL || process.env.HEROKU_POSTGRESQL_JADE_URL,
   api_public_key: process.env.API_PUBLIC_KEY,
   salt_rounds: process.env.SALT_ROUNDS,
   secret_key: process.env.SECRET,
