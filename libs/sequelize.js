@@ -20,6 +20,7 @@ if (config.isProd) {
   };
 }
 
+console.log('env:', config.env);
 console.log(config.dbUrl);
 
 const sequelize = new Sequelize(config.dbUrl, options);
