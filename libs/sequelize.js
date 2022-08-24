@@ -20,6 +20,8 @@ if (config.isProd) {
   };
 }
 
+console.log(config.dbUrl);
+
 const sequelize = new Sequelize(config.dbUrl, options);
 
 // Initalizing models
